@@ -1,8 +1,8 @@
 exports.init = function(options) {
   var sandboxPrototype = {};
-  require('./examples/hello-world-server/web-modules/index/http/server/script/index').load(sandboxPrototype);
+  require('./examples/hello-world-server/web-modules/foo/http/server/script').load(sandboxPrototype);
   
   var sandbox = {};
   sandbox.__proto__ = sandboxPrototype;
-  require('./examples/hello-world-server/web-modules/index/index/server/script/index').init(sandbox);
+  require('./examples/hello-world-server/web-modules/foo/index/server/script').init(sandbox);
 };
