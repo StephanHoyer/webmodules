@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "vendor": "foo",
+  "name": "index",
+  "version": "0.0.1",
+  "description": "Starts simple server on port 8000",
+  "server": {
+    "dependencies": {
+      "foo": "http"
+    }
+  }
+}
