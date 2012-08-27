@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "hello-world-server",
+  "vendor": "my",
+  "version": "0.0.1",
+  "description": "simple hello world server with two dependent packages",
+  "server": {
+    "dependencies": {
+      "bar": "index"
+    }
+  },
+  "coreModules": {
+    "foo": "index"
+  }
+}
+

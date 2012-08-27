@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "vendor": "foo",
+  "name": "http",
+  "version": "0.0.1",
+  "description": "Init and start simple http server",
+  "server": ''
+}
