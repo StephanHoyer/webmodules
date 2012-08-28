@@ -11,20 +11,24 @@ exports.init = function(options) {
   var i;
   var modules;
   var modulesPath;
+  var modulePath;
   var vendor;
   var vendorsPath;
 
-  function initVendor(vendorName, vendorComplete) {
+  function initVendor(vendorName, vendorCompleteCB) {
     modulesPath = path.join(vendorsPath, vendorName);
     fs.readdir(modulesPath, function (err, modulesList) {
       if (!modulesList.length) {
         return;
       }
       vendor = modules[vendorName] = {};
-      async.forEach(modulesList, function (moduleName, moduleComplete) {
-        vendor[moduleName] = {};
-        moduleComplete();
-      }, vendorComplete);
+      async.forEach(modulesList, function (moduleName, moduleCompleteCB) {
+        modulePath = path.join(modulesPath, moduleName);
+        vendor[moduleName] = {
+          path: modulePath
+        };
+        moduleCompleteCB();
+      }, vendorCompleteCB);
     });
   }
 

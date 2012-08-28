@@ -10,7 +10,7 @@
     }
   },
   "coreModules": {
-    "foo": "index"
+    "foo": "http"
   }
 }
 
