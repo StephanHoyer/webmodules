@@ -4,41 +4,84 @@ var async = require('async');
 
 
 var MODULES_DIRNAME = 'web-modules';
-
+var MODULES_CONF_FILENAME = 'module.json';
 
 exports.init = function(options) {
   var cwd;
   var i;
-  var modules;
-  var modulesPath;
-  var modulePath;
-  var vendor;
-  var vendorsPath;
 
-  function initVendor(vendorName, vendorCompleteCB) {
-    modulesPath = path.join(vendorsPath, vendorName);
-    fs.readdir(modulesPath, function (err, modulesList) {
-      if (!modulesList.length) {
-        return;
+  function initVendor(vendorsPath, vendorName, callback) {
+    var vendor = {
+      path: path.join(vendorsPath, vendorName),
+      name: vendorName
+    };
+    fs.readdir(vendor.path, function(err, list) {
+      if (err) {
+        callback(err);
       }
-      vendor = modules[vendorName] = {};
-      async.forEach(modulesList, function (moduleName, moduleCompleteCB) {
-        modulePath = path.join(modulesPath, moduleName);
-        vendor[moduleName] = {
-          path: modulePath
-        };
-        moduleCompleteCB();
-      }, vendorCompleteCB);
+      async.map(list, async.apply(initModule, vendor), callback);
     });
   }
 
-  modules = {};
-  cwd = process.cwd();
-  vendorsPath = path.join(cwd, MODULES_DIRNAME);
-  fs.readdir(vendorsPath, function (err, vendorList) {
-    async.forEach(vendorList, initVendor, function(err) {
-      console.log(modules);
+  function initModule(vendor, moduleName, callback) {
+    var module = {
+      path: path.join(vendor.path, moduleName),
+      vendor: vendor,
+      name: moduleName
+    };
+    async.waterfall([
+      function readConfig(callback) {
+        var moduleConfigPath = path.join(module.path, MODULES_CONF_FILENAME);
+        fs.readFile(moduleConfigPath, 'utf8', function (err, data) {
+          callback(err, err ? null : JSON.parse(data));
+        });
+      },
+      function checkModuleConfig(data, callback) {
+        if (!data.name) {
+          callback('Name of module in ' + module.path + 'is missing');
+          return;
+        }
+        if (data.name !== module.name) {
+          callback('Name of module directory and module name should match!');
+          return;
+        }
+        if (!data.vendor) {
+          callback('Name of module in ' + module.path + 'is missing!');
+          return;
+        }
+        if (data.vendor !== module.vendor.name) {
+          callback('Name of vendor directory and module vendor name should match!');
+          return;
+        }
+        callback(null, data);
+      }
+    ], function (err, module) {
+      if (!err) {
+        callback(null, module);
+        return;
+      }
+      callback(null);
     });
+  }
+
+  async.waterfall([
+    function webmodulesDirExists(callback) {
+      var vendorsPath;
+      vendorsPath = path.join(cwd, MODULES_DIRNAME);
+      fs.stat(vendorsPath, function (err, stats) {
+        if (err || !stats.isDirectory()) {
+          callback(err || 'Missing webmodules directory');
+        }
+        callback(null, vendorsPath);
+      });
+    },
+    function loadVendors(vendorsPath, callback) {
+      fs.readdir(vendorsPath, function(err, list) {
+        async.concat(list, async.apply(initVendor, vendorsPath), callback);
+      });
+    },
+  ], function (err, modules) {
+    console.log(modules);
   });
 
   var sandboxPrototype = {};

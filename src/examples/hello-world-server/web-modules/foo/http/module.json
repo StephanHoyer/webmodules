@@ -4,5 +4,5 @@
   "name": "http",
   "version": "0.0.1",
   "description": "Init simple http server and registers it througt sandbox.",
-  "server": ''
+  "server": ""
 }
