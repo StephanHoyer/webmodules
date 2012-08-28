@@ -1,0 +1,19 @@
+{
+  "author": "Stephan Hoyer <ste.hoyer@gmail.com>",
+  "name": "webmodules",
+  "description": "Module wich provides a way to handle combined frontend and backenmodules",
+  "version": "0.0.1",
+  "repository": {
+    "url": ""
+  },
+  "main": "webmodules.js",
+  "dependencies": {
+    "underscore": "*",
+    "async": "*"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
