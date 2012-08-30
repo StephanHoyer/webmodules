@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
-
+var underscore = require('underscore');
 
 var MODULES_DIRNAME = 'web-modules';
 var MODULES_CONF_FILENAME = 'module.json';
@@ -53,7 +53,7 @@ exports.init = function(options) {
           callback('Name of vendor directory and module vendor name should match!');
           return;
         }
-        callback(null, data);
+        callback(null, underscore.extend(data, module));
       }
     ], function (err, module) {
       if (!err) {
@@ -81,6 +81,7 @@ exports.init = function(options) {
       });
     },
   ], function (err, modules) {
+    modules = underscore.filter(modules, underscore.identity);
     console.log(modules);
   });
 
