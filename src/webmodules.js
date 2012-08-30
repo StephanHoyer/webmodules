@@ -54,7 +54,7 @@ exports.init = function(options) {
           return;
         }
         callback(null, underscore.extend(data, module));
-      }
+      },
     ], function (err, module) {
       if (!err) {
         callback(null, module);
@@ -75,13 +75,24 @@ exports.init = function(options) {
         callback(null, vendorsPath);
       });
     },
-    function loadVendors(vendorsPath, callback) {
+    function loadModules(vendorsPath, callback) {
       fs.readdir(vendorsPath, function(err, list) {
         async.concat(list, async.apply(initVendor, vendorsPath), callback);
       });
     },
+    function reorganizeConfig(modules, callback) {
+      modulesObject = {};
+      async.forEach(modules, function(module, callback) {
+        if (module) {
+          var key = module.vendor.name + '-' + module.name;
+          modulesObject[key] = module;
+        }
+        callback(null);
+      }, function(err) {
+        callback(null, modulesObject);
+      });
+    }
   ], function (err, modules) {
-    modules = underscore.filter(modules, underscore.identity);
     console.log(modules);
   });
 
