@@ -9,7 +9,7 @@
   "main": "webmodules.js",
   "dependencies": {
     "underscore": "*",
-    "async": "*"
+    "async": ">=2.6.0"
   },
   "devDependencies": {},
   "optionalDependencies": {},
